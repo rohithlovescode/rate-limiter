@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: rate-limiter-service
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 2
+          max-wait: 1000ms
+
+rate-limiter:
+  default-algorithm: SLIDING_WINDOW   # TOKEN_BUCKET or SLIDING_WINDOW
+  fallback-strategy: AP               # AP (in-memory fallback) or CP (fail-closed)
+  default-limit: 100                  # max requests per window (sliding window)
+  default-window-ms: 60000            # 60 seconds window
+  default-capacity: 100               # max tokens (token bucket)
+  default-refill-rate: 10             # tokens added per second (token bucket)
+  key-prefix: rl                      # Redis key namespace prefix
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+logging:
+  level:
+    com.ratelimiter: DEBUG
+    org.springframework.data.redis: WARN

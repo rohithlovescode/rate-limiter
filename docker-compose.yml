@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    container_name: rate-limiter-app
+    ports:
+      - "8080:8080"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SPRING_PROFILES_ACTIVE: default
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - rl-net
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: rate-limiter-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - rl-net
+    restart: unless-stopped
+
+networks:
+  rl-net:
+    driver: bridge
+
+volumes:
+  redis-data:
