@@ -271,3 +271,7 @@ logging:
     com.ratelimiter: DEBUG
     org.springframework.data.redis: DEBUG
 ```
+### Screenshots
+<img width="1889" height="478" alt="image" src="https://github.com/user-attachments/assets/9c414cbb-d61f-4a45-8ac7-fa81355ba8c0" />
+<img width="1874" height="841" alt="image" src="https://github.com/user-attachments/assets/a0ea6add-a4f0-495e-9907-3db405be99bf" />
+
